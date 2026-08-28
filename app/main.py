@@ -1,14 +1,12 @@
 import base64
 import io
 import time
-from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Response
 import httpx
 import numpy as np
-from PIL import Image
-
+from fastapi import FastAPI, HTTPException, Response
 from model import get_default_model_name, load_model
+from PIL import Image
 from schemas import (
     BatchPredictRequest,
     BatchPredictResponse,
