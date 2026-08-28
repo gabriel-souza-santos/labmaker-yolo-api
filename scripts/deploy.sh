@@ -35,7 +35,7 @@ docker compose pull
 
 # ── Sobe a nova versão ───────────────────────────────────────
 echo "[2/4] Iniciando nova versão..."
-docker compose up -d
+docker compose up -d --remove-orphans
 
 
 # ── Aguarda o serviço estabilizar ────────────────────────────
@@ -63,13 +63,10 @@ else
     if [ "$PREVIOUS" != "none" ]; then
         echo "[ROLLBACK] Revertendo para: $PREVIOUS"
         docker compose down
-        IMAGE=$PREVIOUS docker compose up -d
+        IMAGE=$PREVIOUS docker compose up -d --remove-orphans
         echo "[ROLLBACK] Concluído. Serviço restaurado."
     else
         echo "[AVISO] Sem imagem anterior para rollback."
     fi
     exit 1
 fi
-
-# Torna o script executável
-chmod +x scripts/deploy.sh
