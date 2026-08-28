@@ -1,5 +1,7 @@
 services:
   yolo-api:
+    image:
+      ghcr.io/gabriel-souza-santos/labmaker-yolo-api/yolo-api:latest
     build:
       context: .
       dockerfile: Dockerfile.api
