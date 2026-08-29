@@ -16,7 +16,7 @@ def _patched_torch_load(*args, **kwargs):
 
 torch.load = _patched_torch_load
 
-MODELS_DIR = Path("/app/models")
+MODELS_DIR = Path(os.getenv("MODELS_DIR", Path(__file__).resolve().parent.parent / "models"))
 _cache: dict = {}
 
 
