@@ -35,6 +35,12 @@ docker compose pull
 
 # ── Sobe a nova versão ───────────────────────────────────────
 echo "[2/4] Iniciando nova versão..."
+for name in yolo-api yolo-client; do
+    if docker inspect "$name" > /dev/null 2>&1; then
+        echo "  Removendo container pré-existente: $name"
+        docker rm -f "$name"
+    fi
+done
 docker compose up -d --remove-orphans
 
 
@@ -63,6 +69,11 @@ else
     if [ "$PREVIOUS" != "none" ]; then
         echo "[ROLLBACK] Revertendo para: $PREVIOUS"
         docker compose down
+        for name in yolo-api yolo-client; do
+            if docker inspect "$name" > /dev/null 2>&1; then
+                docker rm -f "$name"
+            fi
+        done
         IMAGE=$PREVIOUS docker compose up -d --remove-orphans
         echo "[ROLLBACK] Concluído. Serviço restaurado."
     else
