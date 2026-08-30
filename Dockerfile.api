@@ -6,19 +6,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libgomp1 \
     curl \
+    gnupg \
+    wget \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Adiciona o repositório oficial da Raspberry Pi Foundation
+RUN wget -qO - https://archive.raspberrypi.com/debian/raspberrypi.gpg.key \
+    | gpg --dearmor -o /usr/share/keyrings/raspberrypi-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/raspberrypi-archive-keyring.gpg] https://archive.raspberrypi.com/debian/ bookworm main" \
+    > /etc/apt/sources.list.d/raspi.list
+
+# Instala rpicam-apps a partir do repositório da Raspberry Pi
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    rpicam-apps \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Cache de camadas para dependências Python
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
-
-# Copia código da aplicação
 COPY app/ .
-
 EXPOSE 8000
-
-# Executa o Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
