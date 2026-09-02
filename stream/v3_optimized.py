@@ -134,6 +134,9 @@ class RealtimeDetector:
         self.infer_size  = infer_size
 
 
+        from preprocessing.preprocessor import Preprocessor, PreprocessConfig
+        self.preprocessor = Preprocessor(PreprocessConfig(infer_size=infer_size))
+
         self._frame_idx   = 0
         self._last_boxes  = []      # [(label, conf, x1,y1,x2,y2), ...]
         self._last_infer_ms = 0.0
