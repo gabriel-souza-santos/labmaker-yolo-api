@@ -9,6 +9,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException, Response
 from model import get_default_model_name, load_model
 from PIL import Image
+from preprocessing.preprocessor import CONFIG_DEFAULT, Preprocessor
 from schemas import (
     BatchPredictRequest,
     BatchPredictResponse,
@@ -25,9 +26,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
+_preprocessor = Preprocessor(CONFIG_DEFAULT)   # instância global
+
 # ── Métricas simples em memória ─────────────────────────────
 _metrics = {"total": 0, "success": 0, "total_ms": 0.0}
-
 
 
 def log_event(event: str, level: str = "INFO", **kwargs):
@@ -70,23 +72,39 @@ def _run_inference(
     image_np: np.ndarray, model_name: str, confidence: float
 ) -> PredictResponse:
     model = load_model(model_name)
+
+
+    # Pré-processamento explícito
+    # image_np chega em RGB (já convertido em _decode_image) --
+    # o Preprocessor espera BGR, então converte temporariamente
+    frame_bgr   = image_np[:, :, ::-1]
+    preproc_res = _preprocessor.process(frame_bgr)
+    frame_ready = preproc_res.frame  # RGB, letterboxed
+
+
     t0 = time.perf_counter()
-    results = model(image_np, conf=confidence, verbose=False)
+    results = model(frame_ready, conf=confidence, verbose=False)
     elapsed_ms = (time.perf_counter() - t0) * 1000
+
 
     detections = []
     for r in results:
         for box in r.boxes:
-            coords = box.xyxy[0].tolist()
+            # Ajusta as coordenadas do espaço letterboxed de volta ao
+            # espaço da imagem original -- sem isso, os bboxes retornados
+            # pela API ficam deslocados sempre que houver padding
+            bbox_lb = box.xyxy[0].numpy().reshape(1, 4)
+            bbox_orig = _preprocessor.adjust_boxes(bbox_lb, preproc_res)[0]
             cls_id = int(box.cls[0].item())
             conf_val = float(box.conf[0].item())
-            detections.append(
-                Detection(
-                    label=model.names[cls_id],
-                    confidence=round(conf_val, 4),
-                    bbox=[round(float(c), 2) for c in coords],
-                )
-            )
+
+
+            detections.append(Detection(
+                label=model.names[cls_id],
+                confidence=round(conf_val, 4),
+                bbox=[round(float(c), 2) for c in bbox_orig],
+            ))
+
 
     h, w = image_np.shape[:2]
     return PredictResponse(
@@ -96,6 +114,7 @@ def _run_inference(
         image_width=w,
         image_height=h,
     )
+
 
 
 # ── Endpoints ───────────────────────────────────────────────
