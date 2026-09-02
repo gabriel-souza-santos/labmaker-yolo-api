@@ -24,3 +24,9 @@ images/
 
 # VS Code
 .vscode
+
+# Imagens salvas por scripts de experimentos
+preprocessing/outputs/
+
+# Resultados do Ultralytics
+runs/
