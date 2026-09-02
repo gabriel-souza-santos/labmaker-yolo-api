@@ -1,8 +1,7 @@
 """Gera comparativo visual BGR vs RGB para inspeção."""
-import cv2
-import numpy as np
 from pathlib import Path
 
+import cv2
 
 img_path = sorted(Path("dataset/exports/epi-v1/valid/images").glob("*.jpg"))[0]
 frame    = cv2.imread(str(img_path))

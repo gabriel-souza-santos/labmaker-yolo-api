@@ -3,13 +3,16 @@ Experimento E4: equalização de histograma vs CLAHE.
 Usa o dataset epi-v1-dark (imagens escurecidas por gamma) para
 simular condições de iluminação adversa.
 """
-import sys, cv2, numpy as np
+import sys
+
+import cv2
+import numpy as np
+
 sys.path.insert(0, '.')
-from preprocessing.utils.evaluate import evaluate_pipeline
-
-
 # Override do dataset para usar versão escurecida
 import preprocessing.utils.evaluate as ev_module
+from preprocessing.utils.evaluate import evaluate_pipeline
+
 DATASET_DARK = "dataset/exports/epi-v1-dark/data.yaml"
 
 

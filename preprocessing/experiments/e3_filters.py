@@ -3,11 +3,14 @@ Experimento E3: impacto de filtros de suavização na detecção de EPIs.
 Testa quatro configurações: sem filtro, Gaussiano 3×3, Gaussiano 5×5,
 Mediana 3 e Bilateral (bônus de análise de custo).
 """
-import sys, cv2, numpy as np, time
+import sys
+import time
+
+import cv2
+import numpy as np
+
 sys.path.insert(0, '.')
 from preprocessing.utils.evaluate import evaluate_pipeline
-
-
 
 
 def preproc_gauss_33(frame: np.ndarray) -> np.ndarray:

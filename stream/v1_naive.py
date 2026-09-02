@@ -3,19 +3,15 @@ stream/v1_naive.py — Implementação ingênua: diagnóstico de FPS e latência
 Execução: python3 stream/v1_naive.py --device 0 --width 640 --height 480
 """
 import argparse
+import subprocess
+import sys
 import time
 from pathlib import Path
-import sys
-import subprocess
-
 
 import cv2
 import numpy as np
-from ultralytics import YOLO
-
-
 import torch
-
+from ultralytics import YOLO
 
 _orig_torch_load = torch.load
 def _patched_torch_load(*args, **kwargs):
@@ -146,7 +142,7 @@ def main():
     print(f"  Ciclo médio       : {total_cycle/n:>7.1f} ms")
     print(f"  FPS sustentado    : {1000/(total_cycle/n):>7.1f} FPS")
     print("=" * 58)
-    print("")
+    print()
     print("DIAGNÓSTICO:")
     avg_cap = total_capture / n
     if avg_cap > 50:

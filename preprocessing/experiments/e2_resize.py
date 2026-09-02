@@ -2,11 +2,14 @@
 Experimento E2: resize ingênuo vs letterbox.
 Demonstra a distorção geométrica e seu impacto no mAP.
 """
-import sys, cv2, numpy as np
-sys.path.insert(0, '.')
-from preprocessing.utils.evaluate  import evaluate_pipeline
-from preprocessing.utils.letterbox import letterbox
+import sys
 
+import cv2
+import numpy as np
+
+sys.path.insert(0, '.')
+from preprocessing.utils.evaluate import evaluate_pipeline
+from preprocessing.utils.letterbox import letterbox
 
 TARGET = 416   # resolução de inferência padrão (v3_optimized.py)
 

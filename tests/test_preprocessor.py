@@ -4,10 +4,8 @@ Testes unitários do módulo preprocessor.py.
 Integra-se à suíte pytest (tests/test_api.py).
 """
 import numpy as np
-import pytest
-from preprocessing.preprocessor import Preprocessor, PreprocessConfig
 
-
+from preprocessing.preprocessor import PreprocessConfig, Preprocessor
 
 
 def make_frame(h=480, w=640, dtype=np.uint8):

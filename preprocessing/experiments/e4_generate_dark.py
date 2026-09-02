@@ -2,11 +2,11 @@
 Gera versões escuras das imagens de validação para testar equalização.
 Salva em dataset/exports/epi-v1-dark/ mantendo os labels originais.
 """
-import cv2
-import numpy as np
 import shutil
 from pathlib import Path
 
+import cv2
+import numpy as np
 
 SRC  = Path("dataset/exports/epi-v1/valid")
 DEST = Path("dataset/exports/epi-v1-dark/valid")
